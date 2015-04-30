@@ -48,7 +48,6 @@ public:
     DataSource(const Database & db_, const SelectQuery& sel_) 
         : db(db_), sel(sel_) {
     }
-
     /** returns database reference */
     const Database & getDatabase() const {
         return db;

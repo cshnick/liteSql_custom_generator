@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0048 NEW)
+#cmake_policy(SET CMP0048 NEW)
 
 enable_language(C)
 enable_language(CXX)
@@ -20,9 +20,9 @@ if (MSVC)
   
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
-  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long -std=c++11")
    #-pedantic 
-  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long -std=c++11")
 endif(MSVC)
 
 # Include all the necessary files for macros
@@ -33,7 +33,7 @@ include (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
 include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
-set(PROJECT_NAME "litesql" VERSION 0.3.17.4)
+set(PROJECT_NAME "litesql")
 
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
@@ -45,9 +45,9 @@ option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)
 option(LITESQL_WITH_OCILIB "build with ocilib Backend" OFF)
 #option(LITESQL_WITH_ODBC "build with ODBC Backend" ON)
-option(LITESQL_WITH_DOCS "generate Documentation" OFF)
+option(LITESQL_WITH_DOCS "generate Documentation" ON)
 option(LITESQL_WITH_SAX_PARSER "use new SAX parser" ON)
-option(LITESQL_WITH_UI "build also GUI-Version of generator" OFF)
+option(LITESQL_WITH_UI "build also GUI-Version of generator" ON)
 option(LITESQL_WITH_TESTS "enable testing" ON)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
 
@@ -215,9 +215,9 @@ add_subdirectory(src)
  
 project( ${PROJECT_NAME} )
 
-export(EXPORT litesql-util)
+#export(EXPORT litesql-util)
 install(EXPORT litesql DESTINATION litesql.cmake)
-export(EXPORT model)
+#export(EXPORT model)
 install(EXPORT model DESTINATION model.cmake)
 
 include(InstallRequiredSystemLibraries)

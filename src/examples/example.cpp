@@ -24,69 +24,109 @@ using namespace example;
 int main(int argc, char **argv) {
 
     try {
-        // using SQLite3 as backend
-        ExampleDatabase db("sqlite3", "database=example.db");
-        // create tables, sequences and indexes
-        db.verbose = true;
-        
-        if (db.needsUpgrade())
-        {
-          db.upgrade();
-        }
-        // start transaction
-        db.begin();
+    	// using SQLite3 as backend
+    	ExampleDatabase db("sqlite3", "database=example.db");
+    	// create tables, sequences and indexes
+    	db.verbose = true;
 
-        // create couple of Person-objects
-        Person jeff(db);
-        jeff.name = "Jeff";
-        jeff.sex = Person::Sex::Male;
-        jeff.age = 32;
-        jeff.aDoubleValue = 0.32;
-        Blob image_jeff("abc",4);
-        jeff.image = image_jeff;
-        // store Jeff to database
-        jeff.update();
-        Person jill(db);
-        jill.name = "Jill";
-        jill.sex = Person::Sex::Female;
-        jill.image = Blob(NULL);
-        jill.age = 33;
-        jill.update();
-        Person jack(db);
-        jack.name = "Jack";
-        jack.sex = Person::Sex::Male;
-        jack.update();
-        Person jess(db);
-        jess.name = "Jess";
-        jess.sex = Person::Sex::Female;
-        jess.update();
+    	if (db.needsUpgrade())
+    	{
+    		db.upgrade();
+    	}
+    	// start transaction
+    	db.begin();
+
+    	// create couple of Person-objects
+    	Person jeff(db);
+    	DataSource<Person> b = select<Person>(db, Person::Name == "Jeff");
+    	if (!b.count()) {
+    		jeff.name = "Jeff";
+    		jeff.sex = Person::Sex::Male;
+    		jeff.age = 32;
+    		jeff.aDoubleValue = 0.32;
+    		Blob image_jeff("abc",4);
+    		jeff.image = image_jeff;
+    		// store Jeff to database
+    		jeff.update();
+    	} else {
+    		jeff = b.one();
+    	}
+    	Person jill(db);
+    	auto c = select<Person>(db, Person::Name == "Jill");
+    	if (!c.count()) {
+    		jill.name = "Jill";
+    		jill.sex = Person::Sex::Female;
+    		jill.image = Blob("abc", 4);
+    		jill.age = 33;
+    		jill.update();
+    	} else {
+    		jill = c.one();
+    	}
+    	Person jack(db);
+    	auto d = select<Person>(db, Person::Name == "Jack");
+    	if (!d.count()) {
+    		jack.name = "Jack";
+    		jack.sex = Person::Sex::Male;
+    		jack.update();
+    	} else {
+    		jack = d.one();
+    	}
+    	Person jess(db);
+    	auto e = select<Person>(db, Person::Name == "Jess");
+    	if (!e.count()) {
+    		jess.name = "Jess";
+    		jess.sex = Person::Sex::Female;
+    		jess.update();
+    	} else {
+    		jess = e.one();
+    	}
+
         // build up relationships between Persons 
-        jeff.children().link(jack);
-        jill.children().link(jack);
-        jill.children().link(jess);
-        jack.father().link(jeff);
-        jack.mother().link(jill);
-        jess.mother().link(jill);
-        jack.siblings().link(jill);
+    	cout << "Jeff children count: " << jeff.children().get(Person::Name == "Jack").count() << endl;
+    	cout << "His(her) name is: " << jeff.children().get(Person::Name == "Jack").one().name << endl;
+    	if (!jeff.children().get(Person::Name == "Jack").count()) {
+    		jeff.children().link(jack);
+    	}
+    	if (!jill.children().get(Person::Name == "Jack").count()) {
+    		jill.children().link(jack);
+    	}
+    	if (!jill.children().get(Person::Name == "Jess").count()) {
+    		jill.children().link(jess);
+    	}
+    	if (!jack.father().get().count()) {
+    		jack.father().link(jeff);
+    	}
+    	if (!jack.mother().get().count()) {
+    		jack.mother().link(jill);
+    	}
+    	if (!jess.mother().get().count()) {
+    		jess.mother().link(jill);
+    	}
+    	if (!jack.siblings().get(Person::Name == "Jill").count()) {
+    		jack.siblings().link(jill);
+    	}
         // roles (linking examples)
-        Office office(db);
-        office.update();
-        School school(db);
-        school.update();
 
-        Employee jeffRole(db);
-        jeffRole.update();
-        jeff.roles().link(jeffRole);
-        jeffRole.office().link(office);
 
-        Student jackRole(db), jessRole(db);
-        jackRole.update();
-        jessRole.update();
-        jack.roles().link(jackRole);
-        jess.roles().link(jessRole);
-        
-        jackRole.school().link(school);
-        jessRole.school().link(school);
+        if (!jeff.roles().get().count()) {
+        	Employee jeffRole(db);
+        	jeffRole.update();
+        	jeff.roles().link(jeffRole);
+        	Office office(db);
+   	        office.update();
+   	        jeffRole.office().link(office);
+        }
+        if (!jack.roles().get().count()) {
+        	Student jackRole(db), jessRole(db);
+        	jackRole.update();
+        	jessRole.update();
+        	jack.roles().link(jackRole);
+        	jess.roles().link(jessRole);
+        	School school(db);
+        	school.update();
+        	jackRole.school().link(school);
+        	jessRole.school().link(school);
+        }
         
         // count Persons
         cout << "There are " << select<Person>(db).count() 
@@ -95,8 +135,9 @@ int main(int argc, char **argv) {
         // select all Persons and order them by age
         vector<Person> family = select<Person>(db).orderBy(Person::Age).all();
         // show results
-        for (vector<Person>::iterator i = family.begin(); i != family.end(); i++)
-            cout << toString(*i) << endl;
+        cout << "Reporting family names:" << endl;
+        for (Person i: family)
+            cout << i.name << endl;
              
         // select intersection of Jeff's and Jill's children and
         // iterate results with cursor
