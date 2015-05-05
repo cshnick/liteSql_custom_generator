@@ -39,12 +39,13 @@ string validID(const string& s, const string& type="field") {
   {
     for (size_t i = 1; i < s.size(); i++)
     {
-      if (!isalnum(s[i]) && !(s[i] != '_')) 
-      {
-        result = "illegal character : ";
-        result += s[i];
-        break;
-      }
+    	//NOTE-I Allow underscore in id
+    	if (!isalnum(s[i]) && (s[i] != '_'))
+    	{
+    		result = "illegal character : ";
+    		result += s[i];
+    		break;
+    	}
     }
   }
   return result;
