@@ -1,6 +1,7 @@
 set(EXECUTABLES example)
 
 set(example_SOURCES example.cpp exampledatabase.cpp exampledatabase.hpp exampledatabase.xml auth.xml exampledatabase.dot)
+set(SkypeDB_SOURCES skype.cpp main.cpp main.hpp)
 
 add_custom_command(
    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.cpp ${CMAKE_CURRENT_SOURCE_DIR}/exampledatabase.hpp
@@ -18,11 +19,11 @@ add_custom_command(
    DEPENDS litesql-gen exampledatabase.xml 
    )
 
-
- 
 add_executable(example ${example_SOURCES} ${example_HEADERS})
+add_executable(skype_db ${SkypeDB_SOURCES})
 
 target_link_libraries (example litesql litesql-util ${BACKEND_LIBRARIES})
+target_link_libraries (skype_db litesql litesql-util ${BACKEND_LIBRARIES})
 
 set_property(TARGET example APPEND PROPERTY COMPILE_DEFINITIONS ${SQLITE3_DEFINITIONS})
 

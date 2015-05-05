@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "litesql.dtd"> 
+<database name="main" namespace="SkypeDB">
+  <object name="Messages">
+    <field name="is_permanent" type="integer"/>
+    <field name="convo_id" type="integer"/>
+    <field name="chatname" type="string"/>
+    <field name="author" type="string"/>
+    <field name="from_dispname" type="string"/>
+    <field name="author_was_live" type="integer"/>
+    <field name="guid" type="blob"/>
+    <field name="dialog_partner" type="string"/>
+    <field name="timestamp" type="integer"/>
+    <!-- <field name="type" type="integer"/> -->
+    <field name="sending_status" type="integer"/>
+    <field name="consumption_status" type="integer"/>
+    <field name="edited_by" type="string"/>
+    <field name="edited_timestamp" type="integer"/>
+    <field name="param_key" type="integer"/>
+    <field name="param_value" type="integer"/>
+    <field name="body_xml" type="string"/>
+    <field name="identities" type="string"/>
+    <field name="reason" type="string"/>
+    <field name="leavereason" type="integer"/>
+    <field name="participant_count" type="integer"/>
+    <field name="error_code" type="integer"/>
+    <field name="chatmsg_type" type="integer"/>
+    <field name="chatmsg_status" type="integer"/>
+    <field name="body_is_rawxml" type="integer"/>
+    <field name="oldoptions" type="integer"/>
+    <field name="newoptions" type="integer"/>
+    <field name="newrole" type="integer"/>
+    <field name="pk_id" type="integer"/>
+    <field name="crc" type="integer"/>
+    <field name="remote_id" type="integer"/>
+    <field name="call_guid" type="string"/>
+
+  </object>
+</database>
