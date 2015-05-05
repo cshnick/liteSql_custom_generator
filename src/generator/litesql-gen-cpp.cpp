@@ -347,7 +347,7 @@ void writeStaticObjData(Class& cl, const xml::Object& o) {
 }
 
 void writeObjFieldValues(const xml::Object & o,const Field & fld, Class& cl, gen::Method& initValues) {
-   string data = quote(fld.name + "_") + "," +
+   string data = quote(fld.name) + "," +
       "A_field_type_"+ toAttributeString(fld.type) + "," +
       "table__";
    if (!fld.values.empty()) {
@@ -399,7 +399,7 @@ void writeObjFields(Class & cl, const xml::Object & o)
 
    Class ownData("Own");
    Variable ftype("Id", ftypeClass, 
-      quote("id_") + "," + "A_field_type_"+toAttributeString(A_field_type_integer) //+ quote("INTEGER") 
+      quote("id") + "," + "A_field_type_"+toAttributeString(A_field_type_integer) //+ quote("INTEGER")
       + "," + quote(o.getTable()));
    ftype.static_();
    ownData.variable(ftype);
@@ -408,7 +408,7 @@ void writeObjFields(Class & cl, const xml::Object & o)
 
    for (size_t i = 0; i < o.fields.size(); i++) {
       const xml::Field& fld = *o.fields[i];
-      string data = quote(fld.name + "_") + "," +
+      string data = quote(fld.name) + "," +
          "A_field_type_"+ toAttributeString(fld.type) + "," +
          "table__";
 
@@ -666,7 +666,7 @@ void writeObjBaseMethods(Class& cl, const xml::Object& o) {
         .body("litesql::Record values;");
 
     if (o.parentObject.get())
-        insert.body("fields.push_back(\"id_\");")
+        insert.body("fields.push_back(\"id\");")
             .body("values.push_back(id);");
 
     for (Field::sequence::const_iterator f = o.fields.begin(); f!= o.fields.end(); f++) {
@@ -853,14 +853,14 @@ void writeStaticRelData(Class& cl, const xml::Relation& r) {
     for (size_t i2 = 0; i2 < r.related.size(); i2++) {
         Variable ftype(r.related[i2]->fieldTypeName,
                        "const litesql::FieldType",
-                       quote(r.related[i2]->fieldName+"_")
+                       quote(r.related[i2]->fieldName)
                        + "," + "A_field_type_"+toAttributeString(A_field_type_integer) + "," + "table__");
         ftype.static_();
         cl.variable(ftype);
     }
     for (size_t i2 = 0; i2 < r.fields.size(); i2++) {
         const xml::Field& fld = *r.fields[i2];
-        string data = quote(fld.name + "_") + "," +
+        string data = quote(fld.name) + "," +
                       "A_field_type_"+toAttributeString(fld.type) + "," +
 
                       "table__";

@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 
         // build up relationships between Persons 
     	cout << "Jeff children count: " << jeff.children().get(Person::Name == "Jack").count() << endl;
-    	cout << "His(her) name is: " << jeff.children().get(Person::Name == "Jack").one().name << endl;
+//    	cout << "His(her) name is: " << jeff.children().get(Person::Name == "Jack").one().name << endl;
     	if (!jeff.children().get(Person::Name == "Jack").count()) {
     		jeff.children().link(jack);
     	}

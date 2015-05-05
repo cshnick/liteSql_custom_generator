@@ -385,7 +385,7 @@ public:
             return parentObject->getBaseObject();
     }
     string getTable() const {
-        return makeDBName(name + "_");
+        return makeDBName(name);
     }
     string getSequence() const {
         return makeDBName(name + "_seq");
@@ -411,7 +411,7 @@ public:
       typedef counted_ptr<DBField> Ptr;
       typedef std::vector<Ptr> sequence;
 
-      string name() const {return field->name +"_"; };
+      string name() const {return field->name; };
       void name(const string& fieldname) {field->name=fieldname;};
         bool primaryKey;
         Field::Ptr field;

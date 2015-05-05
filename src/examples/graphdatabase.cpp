@@ -18,10 +18,10 @@ NodeNodeRelationEdges::Row::Row(const litesql::Database& db, const litesql::Reco
     }
 }
 const std::string NodeNodeRelationEdges::table__("Node_Node_Edges");
-const litesql::FieldType NodeNodeRelationEdges::Node1("Node1_",A_field_type_integer,table__);
-const litesql::FieldType NodeNodeRelationEdges::Node2("Node2_",A_field_type_integer,table__);
+const litesql::FieldType NodeNodeRelationEdges::Node1("Node1",A_field_type_integer,table__);
+const litesql::FieldType NodeNodeRelationEdges::Node2("Node2",A_field_type_integer,table__);
 std::vector < std::pair< std::string, std::string > > NodeNodeRelationEdges::color_values;
-const NodeNodeRelationEdges::ColorType NodeNodeRelationEdges::Color("color_",A_field_type_integer,table__,color_values);
+const NodeNodeRelationEdges::ColorType NodeNodeRelationEdges::Color("color",A_field_type_integer,table__,color_values);
 void NodeNodeRelationEdges::initValues() {
     color_values.clear();
     color_values.push_back(make_pair("Red","0"));
@@ -77,7 +77,7 @@ litesql::DataSource<graph::Node> NodeNodeRelationEdges::getNode2(const litesql::
     sel.where(srcExpr);
     return DataSource<graph::Node>(db, graph::Node::Id.in(sel) && expr);
 }
-const litesql::FieldType Node::Own::Id("id_",A_field_type_integer,"Node_");
+const litesql::FieldType Node::Own::Id("id",A_field_type_integer,"Node");
 const int Node::NodecolorType::Red(0);
 const int Node::NodecolorType::Blue(1);
 Node::NodecolorType::NodecolorType(const std::string& n, AT_field_type t, const std::string& tbl, const litesql::FieldType::Values& vals)
@@ -104,13 +104,13 @@ litesql::DataSource<NodeNodeRelationEdges::Row> Node::EdgesHandle::getRows(const
     return NodeNodeRelationEdges::getRows(owner->getDatabase(), expr && (NodeNodeRelationEdges::Node1 == owner->id));
 }
 const std::string Node::type__("Node");
-const std::string Node::table__("Node_");
+const std::string Node::table__("Node");
 const std::string Node::sequence__("Node_seq");
-const litesql::FieldType Node::Id("id_",A_field_type_integer,table__);
-const litesql::FieldType Node::Type("type_",A_field_type_string,table__);
-const litesql::FieldType Node::Name("name_",A_field_type_string,table__);
+const litesql::FieldType Node::Id("id",A_field_type_integer,table__);
+const litesql::FieldType Node::Type("type",A_field_type_string,table__);
+const litesql::FieldType Node::Name("name",A_field_type_string,table__);
 std::vector < std::pair< std::string, std::string > > Node::nodecolor_values;
-const litesql::FieldType Node::Nodecolor("nodecolor_",A_field_type_integer,table__);
+const litesql::FieldType Node::Nodecolor("nodecolor",A_field_type_integer,table__);
 void Node::initValues() {
     nodecolor_values.clear();
     nodecolor_values.push_back(make_pair<std::string, std::string>("Red","0"));
@@ -268,12 +268,12 @@ std::vector<litesql::Database::SchemaItem> GraphDatabase::getSchema() const {
     if (backend->supportsSequences()) {
         res.push_back(Database::SchemaItem("Node_seq","sequence",backend->getCreateSequenceSQL("Node_seq")));
     }
-    res.push_back(Database::SchemaItem("Node_","table","CREATE TABLE Node_ (id_ " + rowIdType + ",type_ " + backend->getSQLType(A_field_type_string,"") + "" +",name_ " + backend->getSQLType(A_field_type_string,"512") + "" +",nodecolor_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
-    res.push_back(Database::SchemaItem("Node_Node_Edges","table","CREATE TABLE Node_Node_Edges (Node1_ " + backend->getSQLType(A_field_type_integer,"") + "" +",Node2_ " + backend->getSQLType(A_field_type_integer,"") + "" +",color_ " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
-    res.push_back(Database::SchemaItem("Node_id_idx","index","CREATE INDEX Node_id_idx ON Node_ (id_)"));
-    res.push_back(Database::SchemaItem("Node_Node_EdgesNode1_idx","index","CREATE INDEX Node_Node_EdgesNode1_idx ON Node_Node_Edges (Node1_)"));
-    res.push_back(Database::SchemaItem("Node_Node_EdgesNode2_idx","index","CREATE INDEX Node_Node_EdgesNode2_idx ON Node_Node_Edges (Node2_)"));
-    res.push_back(Database::SchemaItem("Node_Node_Edges_all_idx","index","CREATE INDEX Node_Node_Edges_all_idx ON Node_Node_Edges (Node1_,Node2_)"));
+    res.push_back(Database::SchemaItem("Node","table","CREATE TABLE Node (id " + rowIdType + ",type " + backend->getSQLType(A_field_type_string,"") + "" +",name " + backend->getSQLType(A_field_type_string,"512") + "" +",nodecolor " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Node_Node_Edges","table","CREATE TABLE Node_Node_Edges (Node1 " + backend->getSQLType(A_field_type_integer,"") + "" +",Node2 " + backend->getSQLType(A_field_type_integer,"") + "" +",color " + backend->getSQLType(A_field_type_integer,"") + "" +")"));
+    res.push_back(Database::SchemaItem("Nodeididx","index","CREATE INDEX Nodeididx ON Node (id)"));
+    res.push_back(Database::SchemaItem("Node_Node_EdgesNode1idx","index","CREATE INDEX Node_Node_EdgesNode1idx ON Node_Node_Edges (Node1)"));
+    res.push_back(Database::SchemaItem("Node_Node_EdgesNode2idx","index","CREATE INDEX Node_Node_EdgesNode2idx ON Node_Node_Edges (Node2)"));
+    res.push_back(Database::SchemaItem("Node_Node_Edges_all_idx","index","CREATE INDEX Node_Node_Edges_all_idx ON Node_Node_Edges (Node1,Node2)"));
     return res;
 }
 void GraphDatabase::initialize() {
