@@ -36,7 +36,7 @@ else (LITESQL_WITH_SAX_PARSER)
           litesql-gen.hpp)
 endif(LITESQL_WITH_SAX_PARSER)
 
-add_library(model STATIC ${libmodel_SOURCES})
+add_library(model SHARED ${libmodel_SOURCES})
 install(TARGETS model EXPORT model
             RUNTIME DESTINATION lib 
             LIBRARY DESTINATION lib
@@ -45,10 +45,10 @@ install(TARGETS model EXPORT model
 install(EXPORT model DESTINATION lib)
  
 add_executable(litesql-gen ${litesql-gen_SOURCES})
-add_executable(ddl2litesql ${ddl2litesql_SOURCES})
+#add_executable(ddl2litesql ${ddl2litesql_SOURCES})
 
-target_link_libraries (litesql-gen litesql litesql-util model ${EXPAT_LIBRARIES})
-target_link_libraries (ddl2litesql litesql-util model ${EXPAT_LIBRARIES})
+target_link_libraries (litesql-gen litesql model ${EXPAT_LIBRARIES})
+#target_link_libraries (ddl2litesql litesql model ${EXPAT_LIBRARIES})
 
 if (LITESQL_WITH_UI)
   add_subdirectory(ui)

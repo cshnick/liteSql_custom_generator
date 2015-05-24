@@ -3,6 +3,10 @@ set(LIBNAME litesql)
 ##############################################################################
 # litesql-util library
 ##############################################################################
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+
 set(litesql_util_SOURCES split.cpp 
             string.cpp
                ../../include/litesql/split.hpp 
@@ -46,13 +50,6 @@ set(litesql_SOURCES    database.cpp
             ../../include/litesql/datasource.hpp 
             ../../include/litesql/datetime.hpp
 )
-add_library(  ${LIBNAME} STATIC ${litesql_SOURCES})
-install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
-            RUNTIME DESTINATION lib 
-            LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib/static 
-            COMPONENT devel)
-install(EXPORT ${LIBNAME} DESTINATION lib)
 
 if (MSVC)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/debug/litesqld.lib DESTINATION lib/static
@@ -148,6 +145,16 @@ if (MSVC)
 endif(MSVC)
 
 endif (LITESQL_WITH_ODBC)
+
+add_library(  ${LIBNAME} SHARED ${litesql_SOURCES})
+target_link_libraries(${LIBNAME} litesql-util ${LIBNAME}_sqlite sqlite3)
+
+install(TARGETS ${LIBNAME} EXPORT ${LIBNAME}
+            RUNTIME DESTINATION lib 
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib/static 
+            COMPONENT devel)
+install(EXPORT ${LIBNAME} DESTINATION lib)
 
 include_directories(../../src/library ../../include)
 

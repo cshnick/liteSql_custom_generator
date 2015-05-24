@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(C)
 enable_language(CXX)
 
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+SET(CMAKE_INSTALL_RPATH
+        "${CMAKE_INSTALL_RPATH}:$ORIGIN")
+
 if (MSVC)
   option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked, change also wxWidgets_LIB_DIR)" ON) 
   # see http://msdn.microsoft.com/en-us/library/2kzt1wy3%28VS.71%29.aspx   

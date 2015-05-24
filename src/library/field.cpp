@@ -185,7 +185,9 @@ u8_t hex(char c)
     case 'F':
       return 0xf;
     default:
-      throw("invalid digit");
+      //FIXME Blob processing
+//      throw("invalid digit");
+      return 0;
   }
 }
 
