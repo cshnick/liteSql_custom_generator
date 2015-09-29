@@ -190,17 +190,21 @@ public:
     }
 };
 class Class {
-    string name;
+    string name, db_name;
     string inherits;
     vector<Method> methods;
     vector<Variable> variables;
     vector<Class> classes;
 public:
-    Class(string n, string i="") : name(n), inherits(i) {}
+    Class(string n, string a, string i) : name(n), db_name(a), inherits(i) {}
+    Class(string n, string a) : Class(n, n, a) {}
+    Class(string n) : Class(n, n, "") {}
+
     Class& method(const Method& m) {
         methods.push_back(m);
         return *this;
     }
+
     Class& variable(const Variable& v) {
         variables.push_back(v);
         return *this;
@@ -1251,7 +1255,7 @@ void CppGenerator::writeCPPClasses(const ObjectModel* model)
     }
     Logger::report("writing persistent objects\n");
     for (ObjectSequence::const_iterator it_o=model->objects.begin(); it_o!=model->objects.end(); it_o++) {
-        Class cl((*it_o)->name, (*it_o)->inherits);
+        Class cl((*it_o)->name,(*it_o)->db_name,  (*it_o)->inherits);
         writeStaticObjData(cl, **it_o);
         writeObjFields(cl, **it_o);
         writeObjConstructors(cl, **it_o);
