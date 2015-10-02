@@ -170,7 +170,7 @@
     <!-- <field name="verified_company" type="blob"/> -->
     <field name="sent_authrequest_extrasbitmask" type="integer" />
     <field name="liveid_cid" type="string"/>
-    <field name="extprop_tags" type="string"/>
-    <field name="extprop_away_since" type="integer" />
+   <!--  <field name="extprop_tags" type="string"/> -->
+   <!--  <field name="extprop_away_since" type="integer" /> -->
   </object>
 </database>
