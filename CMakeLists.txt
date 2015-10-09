@@ -207,36 +207,9 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
 include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
 
-install(DIRECTORY include/ DESTINATION include 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(DIRECTORY include/ DESTINATION include 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.h"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(DIRECTORY src/generator/ DESTINATION include/litesql 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
-          COMPONENT devel)
-
 add_subdirectory(src)
  
 message ("Project binary dir: ${PROJECT_BINARY_DIR}")
-
-#export(EXPORT litesql-util)
-install(EXPORT litesql DESTINATION litesql.cmake)
-#export(EXPORT model)
-#install(EXPORT model DESTINATION model.cmake)
-
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_GENERATOR TGZ ZIP)

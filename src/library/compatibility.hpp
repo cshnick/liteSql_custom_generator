@@ -7,11 +7,11 @@
 #endif // #ifdef HAVE_MEMORY_H
 
 #ifndef HAVE_STRTOLL
-//long long int strtoll(const char *nptr, char **endptr, int base);
+long long int strtoll(const char *nptr, char **endptr, int base);
 #endif
 
 #ifndef HAVE_STRTOF
-//float strtof (const char *nptr, char **endptr);
+float strtof (const char *nptr, char **endptr);
 #endif
 
 #ifndef HAVE_LOCALTIME_R
