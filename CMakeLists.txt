@@ -5,8 +5,14 @@ enable_language(C)
 enable_language(CXX)
 
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-SET(CMAKE_INSTALL_RPATH
-        "${CMAKE_INSTALL_RPATH}:$ORIGIN")
+if (NOT APPLE)
+    SET(CMAKE_INSTALL_RPATH
+        "${CMAKE_INSTALL_RPATH}:$ORIGIN/../lib/")
+else (NOT APPLE)
+    SET (CMAKE_INSTALL_RPATH
+   	"@loader_path"
+    )
+endif (NOT APPLE)
 
 if (MSVC)
   option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked, change also wxWidgets_LIB_DIR)" ON) 
@@ -24,8 +30,8 @@ if (MSVC)
   
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
-  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
-  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  #list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  #list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
 endif(MSVC)
 
 # Include all the necessary files for macros
@@ -37,6 +43,7 @@ include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
 set(PROJECT_NAME "litesql")
+project( ${PROJECT_NAME} )
 
 include(${TOP_LEVEL}/cmake_modules/FindMySQL.cmake)
 include(${TOP_LEVEL}/cmake_modules/FindPostgreSQL.cmake)
@@ -133,6 +140,7 @@ if (LITESQL_WITH_DOCS)
 endif(LITESQL_WITH_DOCS)
 
 if (LITESQL_WITH_SAX_PARSER)
+  message(cmake root: ${CMAKE_ROOT})
   include (${CMAKE_ROOT}/Modules/FindEXPAT.cmake)
   mark_as_advanced(EXPAT_INCLUDE_DIRS EXPAT_LIBRARIES EXPAT_FOUND)
 
@@ -163,7 +171,10 @@ if(MSVC)
   set(CMAKE_DL_LIBS "")
   set(CMAKE_DEBUG_POSTFIX "d") 
     link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
+elseif(APPLE)
+  SET(EXPAT_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/macos/lib/Debug/libexpat.a)
 endif(MSVC)
+
 
 check_include_files(dlfcn.h HAVE_DLFCN_H)
 check_include_files(inttypes.h HAVE_INTTYPES_H)
@@ -194,12 +205,6 @@ include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
 add_subdirectory(src)
  
 project( ${PROJECT_NAME} )
-
-#export(EXPORT litesql-util)
-#install(EXPORT litesql DESTINATION litesql.cmake)
-#export(EXPORT model)
-#install(EXPORT model DESTINATION model.cmake)
-
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_GENERATOR TGZ ZIP)
@@ -243,7 +248,7 @@ else(WIN32 AND NOT UNIX)
   set(CPACK_SOURCE_STRIP_FILES "")
 endif(WIN32 AND NOT UNIX)
 set(CPACK_PACKAGE_EXECUTABLES Visual-Litesql;Visual-Litesql;${PROJECT_NAME}-gen;${PROJECT_NAME}-gen)
-include(CPack)
+#include(CPack)
 
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-src-${PROJECT_VERSION})
 add_custom_target(dist

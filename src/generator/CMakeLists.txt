@@ -36,18 +36,19 @@ else (LITESQL_WITH_SAX_PARSER)
           litesql-gen.hpp)
 endif(LITESQL_WITH_SAX_PARSER)
 
-add_library(model SHARED ${libmodel_SOURCES})
-install(TARGETS model EXPORT model
-            RUNTIME DESTINATION lib 
-            LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib/static 
-            COMPONENT devel)
-install(EXPORT model DESTINATION lib)
+SET (MODEL_LIBS 
+    litesql
+    ${EXPAT_LIBRARIES}
+)
+add_library(model STATIC ${libmodel_SOURCES})
+message("Project name is: ${PROJECT_NAME}")
+target_link_libraries(model ${MODEL_LIBS})
  
 add_executable(litesql-gen ${litesql-gen_SOURCES})
 #add_executable(ddl2litesql ${ddl2litesql_SOURCES})
 
-target_link_libraries (litesql-gen litesql model ${EXPAT_LIBRARIES})
+message("Expat libs: ${EXPAT_LIBRARIES}")
+target_link_libraries (litesql-gen litesql model)
 #target_link_libraries (ddl2litesql litesql model ${EXPAT_LIBRARIES})
 
 if (LITESQL_WITH_UI)
@@ -58,5 +59,4 @@ if (LITESQL_WITH_UI)
 #  endif(MSVC)
 endif(LITESQL_WITH_UI)
 
-install(TARGETS litesql-gen RUNTIME DESTINATION bin COMPONENT generator)
 INCLUDE_DIRECTORIES(../library ${EXPAT_INCLUDE_DIRS})

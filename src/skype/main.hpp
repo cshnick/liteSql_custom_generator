@@ -390,10 +390,6 @@ public:
     litesql::Field<int> sent_authrequest_extrasbitmask;
     static const litesql::FieldType Liveid_cid;
     litesql::Field<std::string> liveid_cid;
-    static const litesql::FieldType Extprop_tags;
-    litesql::Field<std::string> extprop_tags;
-    static const litesql::FieldType Extprop_away_since;
-    litesql::Field<int> extprop_away_since;
     static void initValues();
 protected:
     void defaults();
