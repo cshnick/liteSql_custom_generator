@@ -24,9 +24,8 @@ if (MSVC)
   
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS   _CRT_SECURE_NO_WARNINGS)
 else(MSVC)
-  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long -std=c++11")
-   #-pedantic 
-  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long -std=c++11")
+  list(APPEND CMAKE_CXX_FLAGS "-Wall -Wunused-variable -Wno-long-long")
+  list(APPEND CMAKE_C_FLAGS "-Wall -Wunused-variable -Wno-long-long")
 endif(MSVC)
 
 # Include all the necessary files for macros
@@ -39,20 +38,20 @@ include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
 set(PROJECT_NAME "litesql")
 
-include(cmake/FindMySQL.cmake)
-include(cmake/FindPostgreSQL.cmake)
-include(cmake/FindSQLite3.cmake)
-include(cmake/FindOCILib.cmake)
+include(${TOP_LEVEL}/cmake_modules/FindMySQL.cmake)
+include(${TOP_LEVEL}/cmake_modules/FindPostgreSQL.cmake)
+include(${TOP_LEVEL}/cmake_modules/FindSQLite3.cmake)
+include(${TOP_LEVEL}/cmake_modules/FindOCILib.cmake)
 
 option(LITESQL_WITH_MYSQL "build with mysql Backend" OFF)
 option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)
 option(LITESQL_WITH_OCILIB "build with ocilib Backend" OFF)
 #option(LITESQL_WITH_ODBC "build with ODBC Backend" ON)
-option(LITESQL_WITH_DOCS "generate Documentation" ON)
+option(LITESQL_WITH_DOCS "generate Documentation" OFF)
 option(LITESQL_WITH_SAX_PARSER "use new SAX parser" ON)
-option(LITESQL_WITH_UI "build also GUI-Version of generator" ON)
-option(LITESQL_WITH_TESTS "enable testing" ON)
+option(LITESQL_WITH_UI "build also GUI-Version of generator" OFF)
+option(LITESQL_WITH_TESTS "enable testing" OFF)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
 
 if(LITESQL_WITH_TESTS)
@@ -177,14 +176,12 @@ check_include_files(sys/stat.h HAVE_SYS_STAT_H)
 check_include_files(sys/types.h HAVE_SYS_TYPES_H)
 check_include_files(unistd.h HAVE_UNISTD_H)
 
-
 check_function_exists(malloc HAVE_MALLOC)
 check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
 check_function_exists(atof HAVE_ATOF)
 check_function_exists(strtoll HAVE_STRTOLL)
 check_function_exists(strtof  HAVE_STRTOF)
 check_function_exists(localtime_r HAVE_LOCALTIME_R)
-
 
 # create config.h
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake 
@@ -194,35 +191,14 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
 include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
 
-install(DIRECTORY include/ DESTINATION include 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(DIRECTORY include/ DESTINATION include 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.h"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(DIRECTORY src/generator/ DESTINATION include/litesql 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
-          COMPONENT devel)
-
 add_subdirectory(src)
  
 project( ${PROJECT_NAME} )
 
 #export(EXPORT litesql-util)
-install(EXPORT litesql DESTINATION litesql.cmake)
+#install(EXPORT litesql DESTINATION litesql.cmake)
 #export(EXPORT model)
-install(EXPORT model DESTINATION model.cmake)
+#install(EXPORT model DESTINATION model.cmake)
 
 include(InstallRequiredSystemLibraries)
 
