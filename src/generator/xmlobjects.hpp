@@ -68,7 +68,7 @@ public:
   
   static const char* TAG;
 
-    string name;
+    string name, db_name;
     string fieldTypeName;
     AT_field_type type;
     string default_;
@@ -76,9 +76,13 @@ public:
     AT_field_unique unique;
     vector<Value> values;
 	string length;
-    Field(const string& n, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u, const string& l="") 
-        : name(n), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u),length(l) {
+    Field(const string& n, const string &a, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u, const string& l="")
+        : name(n), db_name(a), fieldTypeName(capitalize(n)), type(t), default_(d), indexed(i), unique(u),length(l) {
     }
+    //Names are equal
+    Field(const string& n, AT_field_type t, const string& d, AT_field_indexed i, AT_field_unique u, const string& l="") 
+            : Field(n, n, t, d, i, u, l)
+    {}
     void value(const Value& v) {
         values.push_back(v);
     }
@@ -336,7 +340,7 @@ public:
 
     static const char* TAG;
 
-    string name, inherits;
+    string name, db_name, inherits;
     Field::sequence fields;
     Method::sequence methods;
     Index::sequence indices;
@@ -345,8 +349,9 @@ public:
     ObjectPtr parentObject;
     ObjectSequence children;
 
-    Object(const string& n, const string& i) 
-      : name(n), 
+    Object(const string& n, const string &a, const string& i)
+      : name(n),
+		db_name(a),
         inherits(i),
         parentObject(NULL) {
         if (i.size() == 0) {
@@ -355,6 +360,10 @@ public:
             fields.push_back(TYPE_FIELD);
         }
     }
+
+    Object(const string &n, const string &i)
+    	: Object(n, n, i)
+    {}
 
     bool inheritsFromDefault() const
     {

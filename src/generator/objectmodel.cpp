@@ -300,23 +300,24 @@ void LitesqlParser::onStartElement(const XML_Char *fullname,
     }
     else
     {
-      ObjectPtr pObj(obj = new Object(    (char*)xmlGetAttrValue(atts,"name"), 
-        safe((char*)xmlGetAttrValue(atts,"inherits")))); 
+      ObjectPtr pObj(obj = new Object((char*)xmlGetAttrValue(atts,"name"),
+    		  safe((char*)xmlGetAttrValue(atts,"db_name")),
+			  safe((char*)xmlGetAttrValue(atts,"inherits"))));
       m_pObjectModel->objects.push_back(pObj);
       Logger::report("object = ",obj->name);
       m_parseState = OBJECT; 
-
     }
   } 
   else if (xmlStrEqual(fullname,(XML_Char*)Field::TAG))
   {
-    Field* pNewField = new Field(   (char*)xmlGetAttrValue(atts,"name"), 
-      field_type(xmlGetAttrValue(atts,"type")),
-      safe(  (char*)xmlGetAttrValue(atts,"default")),
-      field_indexed(xmlGetAttrValue(atts,"indexed")),
-      field_unique(xmlGetAttrValue(atts,"unique")),
-     field_length(xmlGetAttrValue(atts,"length"))
-      );
+	  Field* pNewField = new Field(   (char*)xmlGetAttrValue(atts,"name"),
+			  safe((char*)xmlGetAttrValue(atts,"db_name")),
+			  field_type(xmlGetAttrValue(atts,"type")),
+			  safe(  (char*)xmlGetAttrValue(atts,"default")),
+			  field_indexed(xmlGetAttrValue(atts,"indexed")),
+			  field_unique(xmlGetAttrValue(atts,"unique")),
+			  field_length(xmlGetAttrValue(atts,"length"))
+	  );
 
     switch(m_parseState)
     {

@@ -17,6 +17,8 @@ float strtof (const char *nptr, char **endptr);
 #ifndef HAVE_LOCALTIME_R
 #ifdef WIN32
 #include <time.h>
+#elif __APPLE__
+#include <time.h>
 #endif
 struct tm *localtime_r(const time_t *clock, struct tm *result);
 #endif

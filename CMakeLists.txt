@@ -4,6 +4,16 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(C)
 enable_language(CXX)
 
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+if (NOT APPLE)
+    SET(CMAKE_INSTALL_RPATH
+        "${CMAKE_INSTALL_RPATH}:$ORIGIN")
+else (NOT APPLE)
+    SET (CMAKE_INSTALL_RPATH
+   	"@loader_path"
+    )
+endif (NOT APPLE)
+
 if (MSVC)
   option(LITESQL_MSVC_MT "link with /MT instead of /MD (use dlls versus static linked, change also wxWidgets_LIB_DIR)" ON) 
   # see http://msdn.microsoft.com/en-us/library/2kzt1wy3%28VS.71%29.aspx   
@@ -34,6 +44,9 @@ include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 
 set(PROJECT_NAME "litesql")
+project( ${PROJECT_NAME} )
+SET (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 include(cmake/FindMySQL.cmake)
 include(cmake/FindPostgreSQL.cmake)
@@ -45,9 +58,9 @@ option(LITESQL_WITH_SQLITE3 "build with sqlite3 backend(sources integrated)" ON)
 option(LITESQL_WITH_POSTGRES "build with postgres backend" OFF)
 option(LITESQL_WITH_OCILIB "build with ocilib Backend" OFF)
 #option(LITESQL_WITH_ODBC "build with ODBC Backend" ON)
-option(LITESQL_WITH_DOCS "generate Documentation" ON)
+option(LITESQL_WITH_DOCS "generate Documentation" OFF)
 option(LITESQL_WITH_SAX_PARSER "use new SAX parser" ON)
-option(LITESQL_WITH_UI "build also GUI-Version of generator" ON)
+option(LITESQL_WITH_UI "build also GUI-Version of generator" OFF)
 option(LITESQL_WITH_TESTS "enable testing" ON)
 option(CMAKE_SUPPRESS_REGENERATION "suppress rules to re-run cmake on changes (warning: no dependency checks!)?" OFF)
 
@@ -130,6 +143,7 @@ if (LITESQL_WITH_DOCS)
 endif(LITESQL_WITH_DOCS)
 
 if (LITESQL_WITH_SAX_PARSER)
+  message(cmake root: ${CMAKE_ROOT})
   include (${CMAKE_ROOT}/Modules/FindEXPAT.cmake)
   mark_as_advanced(EXPAT_INCLUDE_DIRS EXPAT_LIBRARIES EXPAT_FOUND)
 
@@ -160,7 +174,10 @@ if(MSVC)
   set(CMAKE_DL_LIBS "")
   set(CMAKE_DEBUG_POSTFIX "d") 
     link_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32/lib/)
+elseif(APPLE)
+  SET(EXPAT_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/macos/lib/Debug/libexpat.a)
 endif(MSVC)
+
 
 check_include_files(dlfcn.h HAVE_DLFCN_H)
 check_include_files(inttypes.h HAVE_INTTYPES_H)
@@ -190,36 +207,9 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
 get_filename_component(CONFIG_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/config.h PATH)
 include_directories(include ${CONFIG_INCLUDE} ${BACKEND_INCLUDES})
 
-install(DIRECTORY include/ DESTINATION include 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(DIRECTORY include/ DESTINATION include 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.h"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(DIRECTORY src/generator/ DESTINATION include/litesql 
-                          COMPONENT devel 
-                          FILES_MATCHING PATTERN "*.hpp"
-                          PATTERN .svn EXCLUDE 
-)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/litesql
-          COMPONENT devel)
-
 add_subdirectory(src)
  
-project( ${PROJECT_NAME} )
-
-#export(EXPORT litesql-util)
-install(EXPORT litesql DESTINATION litesql.cmake)
-#export(EXPORT model)
-install(EXPORT model DESTINATION model.cmake)
-
+message ("Project binary dir: ${PROJECT_BINARY_DIR}")
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_GENERATOR TGZ ZIP)
